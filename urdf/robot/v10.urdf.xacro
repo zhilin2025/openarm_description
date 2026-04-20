@@ -49,6 +49,13 @@
 
   <xacro:arg name="can_fd" default="true" />
 
+  <xacro:arg name="motor_backend" default="damiao" />
+  <xacro:arg name="robstride_master_id" default="253" />
+  <xacro:arg name="robstride_joint_ids" default="1,2,3,4,5,6,7" />
+  <xacro:arg name="robstride_joint_types" default="6,6,3,0,0,0,0" />
+  <xacro:arg name="robstride_gripper_id" default="8" />
+  <xacro:arg name="robstride_gripper_type" default="0" />
+
   <xacro:openarm_robot
   arm_type="v10"
   body_type="v10"
@@ -83,6 +90,12 @@
   right_arm_base_rpy="$(arg right_arm_base_rpy)"
   left_arm_base_rpy="$(arg left_arm_base_rpy)"
   can_fd="$(arg can_fd)"
+  motor_backend="$(arg motor_backend)"
+  robstride_master_id="$(arg robstride_master_id)"
+  robstride_joint_ids="$(arg robstride_joint_ids)"
+  robstride_joint_types="$(arg robstride_joint_types)"
+  robstride_gripper_id="$(arg robstride_gripper_id)"
+  robstride_gripper_type="$(arg robstride_gripper_type)"
   />
 
 </robot>

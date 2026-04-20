@@ -5,6 +5,12 @@
          params="arm_type
              control_gains
              can_interface
+       motor_backend:=^|'damiao'
+       robstride_master_id:=^|253
+       robstride_joint_ids:=^|'1,2,3,4,5,6,7'
+       robstride_joint_types:=^|'6,6,3,0,0,0,0'
+       robstride_gripper_id:=^|8
+       robstride_gripper_type:=^|0
              use_fake_hardware:=^|false
              fake_sensor_commands:=^|false
              hand:=^|false
@@ -26,6 +32,12 @@
             <plugin>openarm_hardware/OpenArm_${arm_type}HW</plugin>
             <param name="can_interface">${can_interface}</param>
             <param name="arm_prefix">${arm_prefix}</param>
+            <param name="motor_backend">${motor_backend}</param>
+            <param name="robstride_master_id">${robstride_master_id}</param>
+            <param name="robstride_joint_ids">${robstride_joint_ids}</param>
+            <param name="robstride_joint_types">${robstride_joint_types}</param>
+            <param name="robstride_gripper_id">${robstride_gripper_id}</param>
+            <param name="robstride_gripper_type">${robstride_gripper_type}</param>
             <param name="hand">${hand}</param>
             <param name="can_fd">${can_fd}</param>
             <param name="kp1">${control_gains['joint1']['kp']}</param>
