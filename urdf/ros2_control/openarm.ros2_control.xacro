@@ -1,6 +1,12 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
+          <!--
+            核心作用是通过参数化、可复用的方式生成 ROS 2 Control 所需的硬件接口与关节配置，
+            是连接 “机械臂硬件描述” 与 “C++ 硬件接口代码”（hardware interface ） 的关键桥梁,
+           
+            这个 Xacro 文件和之前的 C++ 文件（v10_simple_hardware.hpp/cpp）是 ROS 2 Control 硬件接口的「配置层」与「实现层」的关系，
+            二者通过 ROS 2 Control 框架和 pluginlib 插件机制紧密配合，共同完成机械臂的硬件抽象与控制
+           -->
 <xacro:macro name="openarm_arm_ros2_control"
          params="arm_type
              control_gains
@@ -8,7 +14,7 @@
        motor_backend:=^|'damiao'
        robstride_master_id:=^|253
        robstride_joint_ids:=^|'1,2,3,4,5,6,7'
-       robstride_joint_types:=^|'6,6,3,0,0,0,0'
+      robstride_joint_types:=^|'3,3,6,6,0,0,0'
        robstride_gripper_id:=^|8
        robstride_gripper_type:=^|0
              use_fake_hardware:=^|false
@@ -30,6 +36,14 @@
           </xacro:if>
           <xacro:if value="${use_fake_hardware == 0}">
             <plugin>openarm_hardware/OpenArm_${arm_type}HW</plugin>
+            <!--ROS 2 Control 启动时，读取 URDF 中的 <ros2_control> 标签：
+              看到 <plugin>openarm_hardware/OpenArm_v10HW</plugin>；
+              通过 pluginlib 找到 C++ 注册的 OpenArm_v10HW 类；
+              动态创建 OpenArm_v10HW 的实例。
+             -->
+            <!-- 参数传递：所有 <param> 标签的内容，都会被 ROS 2 Control 框架封装到 hardware_interface::HardwareInfo 的 hardware_parameters 中，
+            然后被 C++ 代码的 parse_config 函数读取 —— 这是Xacro 配置与 C++ 代码的核心连接点。
+            -->
             <param name="can_interface">${can_interface}</param>
             <param name="arm_prefix">${arm_prefix}</param>
             <param name="motor_backend">${motor_backend}</param>
@@ -62,6 +76,9 @@
           <!--
             deactivated for gazebo velocity and position interface due to a bug
             https://github.com/ros-controls/gz_ros2_control/issues/343
+
+            Xacro 里的 <command_interface>/<state_interface> 告诉框架 “这个硬件有哪些可写的命令、哪些可读的状态”；
+            C++ 里的 export_command_interfaces()/export_state_interfaces() 实际把这些接口的内存地址暴露给框架，让框架能读写数据
 
             Command Interfaces -->
             <command_interface name="position"/>

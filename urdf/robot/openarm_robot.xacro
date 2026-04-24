@@ -40,7 +40,7 @@
             motor_backend:='damiao'
             robstride_master_id:='253'
             robstride_joint_ids:='1,2,3,4,5,6,7'
-            robstride_joint_types:='6,6,3,0,0,0,0'
+            robstride_joint_types:='3,3,6,6,0,0,0'
             robstride_gripper_id:='8'
             robstride_gripper_type:='0'
             "
