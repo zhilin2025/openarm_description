@@ -12,6 +12,7 @@
       robstride_joint_types:=^|'3,3,6,6,0,0,0'
        robstride_gripper_id:=^|8
        robstride_gripper_type:=^|0
+       auto_return_to_zero_on_activate:=^|false
              use_fake_hardware:=^|false
              fake_sensor_commands:=^|false
              hand:=^|false
@@ -38,6 +39,7 @@
             <param name="robstride_joint_types">${robstride_joint_types}</param>
             <param name="robstride_gripper_id">${robstride_gripper_id}</param>
             <param name="robstride_gripper_type">${robstride_gripper_type}</param>
+            <param name="auto_return_to_zero_on_activate">${auto_return_to_zero_on_activate}</param>
             <param name="hand">${hand}</param>
             <param name="can_fd">${can_fd}</param>
             <param name="kp1">${control_gains['joint1']['kp']}</param>
@@ -109,6 +111,7 @@
             <param name="robstride_joint_types">${robstride_joint_types}</param>
             <param name="robstride_gripper_id">${robstride_gripper_id}</param>
             <param name="robstride_gripper_type">${robstride_gripper_type}</param>
+            <param name="auto_return_to_zero_on_activate">${auto_return_to_zero_on_activate}</param>
             <param name="hand">${hand}</param>
             <param name="can_fd">${can_fd}</param>
             <param name="kp1">${control_gains['joint1']['kp']}</param>

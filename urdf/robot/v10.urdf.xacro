@@ -55,6 +55,7 @@
   <xacro:arg name="robstride_joint_types" default="3,3,6,6,0,0,0" />
   <xacro:arg name="robstride_gripper_id" default="8" />
   <xacro:arg name="robstride_gripper_type" default="0" />
+  <xacro:arg name="auto_return_to_zero_on_activate" default="false" />
 
   <xacro:openarm_robot
   arm_type="v10"
@@ -96,6 +97,7 @@
   robstride_joint_types="$(arg robstride_joint_types)"
   robstride_gripper_id="$(arg robstride_gripper_id)"
   robstride_gripper_type="$(arg robstride_gripper_type)"
+  auto_return_to_zero_on_activate="$(arg auto_return_to_zero_on_activate)"
   />
 
 </robot>

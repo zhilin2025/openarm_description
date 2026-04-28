@@ -43,6 +43,7 @@
             robstride_joint_types:='3,3,6,6,0,0,0'
             robstride_gripper_id:='8'
             robstride_gripper_type:='0'
+            auto_return_to_zero_on_activate:='false'
             "
             >
 
@@ -118,6 +119,7 @@
             robstride_joint_types="${robstride_joint_types}"
             robstride_gripper_id="${robstride_gripper_id}"
             robstride_gripper_type="${robstride_gripper_type}"
+            auto_return_to_zero_on_activate="${auto_return_to_zero_on_activate}"
             use_fake_hardware="${use_fake_hardware}"
             fake_sensor_commands="${fake_sensor_commands}"
             left_arm_prefix="${left_arm_prefix}"
@@ -183,6 +185,7 @@
             robstride_joint_types="${robstride_joint_types}"
             robstride_gripper_id="${robstride_gripper_id}"
             robstride_gripper_type="${robstride_gripper_type}"
+            auto_return_to_zero_on_activate="${auto_return_to_zero_on_activate}"
             use_fake_hardware="${use_fake_hardware}"
             fake_sensor_commands="${fake_sensor_commands}"
             hand="${hand}"
