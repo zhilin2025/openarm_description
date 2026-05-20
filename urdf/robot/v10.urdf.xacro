@@ -56,6 +56,10 @@
   <xacro:arg name="robstride_gripper_id" default="8" />
   <xacro:arg name="robstride_gripper_type" default="0" />
   <xacro:arg name="auto_return_to_zero_on_activate" default="false" />
+  <xacro:arg name="limit_margin" default="0.1" />
+  <xacro:arg name="limit_stop_margin" default="0.02" />
+  <xacro:arg name="limit_decel_factor" default="0.2" />
+  <xacro:arg name="zero_torque_kd" default="0.3" />
 
   <xacro:openarm_robot
   arm_type="v10"
@@ -98,6 +102,10 @@
   robstride_gripper_id="$(arg robstride_gripper_id)"
   robstride_gripper_type="$(arg robstride_gripper_type)"
   auto_return_to_zero_on_activate="$(arg auto_return_to_zero_on_activate)"
+  limit_margin="$(arg limit_margin)"
+  limit_stop_margin="$(arg limit_stop_margin)"
+  limit_decel_factor="$(arg limit_decel_factor)"
+  zero_torque_kd="$(arg zero_torque_kd)"
   />
 
 </robot>

@@ -44,6 +44,10 @@
             robstride_gripper_id:='8'
             robstride_gripper_type:='0'
             auto_return_to_zero_on_activate:='false'
+            limit_margin:='0.1'
+            limit_stop_margin:='0.02'
+            limit_decel_factor:='0.2'
+            zero_torque_kd:='0.3'
             "
             >
 
@@ -120,6 +124,10 @@
             robstride_gripper_id="${robstride_gripper_id}"
             robstride_gripper_type="${robstride_gripper_type}"
             auto_return_to_zero_on_activate="${auto_return_to_zero_on_activate}"
+            limit_margin="${limit_margin}"
+            limit_stop_margin="${limit_stop_margin}"
+            limit_decel_factor="${limit_decel_factor}"
+            zero_torque_kd="${zero_torque_kd}"
             use_fake_hardware="${use_fake_hardware}"
             fake_sensor_commands="${fake_sensor_commands}"
             left_arm_prefix="${left_arm_prefix}"
@@ -186,6 +194,10 @@
             robstride_gripper_id="${robstride_gripper_id}"
             robstride_gripper_type="${robstride_gripper_type}"
             auto_return_to_zero_on_activate="${auto_return_to_zero_on_activate}"
+            limit_margin="${limit_margin}"
+            limit_stop_margin="${limit_stop_margin}"
+            limit_decel_factor="${limit_decel_factor}"
+            zero_torque_kd="${zero_torque_kd}"
             use_fake_hardware="${use_fake_hardware}"
             fake_sensor_commands="${fake_sensor_commands}"
             hand="${hand}"

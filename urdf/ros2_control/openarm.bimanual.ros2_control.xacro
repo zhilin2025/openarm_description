@@ -13,6 +13,10 @@
        robstride_gripper_id:=^|8
        robstride_gripper_type:=^|0
        auto_return_to_zero_on_activate:=^|false
+       limit_margin:=^|0.1
+       limit_stop_margin:=^|0.02
+       limit_decel_factor:=^|0.2
+       zero_torque_kd:=^|0.3
              use_fake_hardware:=^|false
              fake_sensor_commands:=^|false
              hand:=^|false
@@ -40,6 +44,9 @@
             <param name="robstride_gripper_id">${robstride_gripper_id}</param>
             <param name="robstride_gripper_type">${robstride_gripper_type}</param>
             <param name="auto_return_to_zero_on_activate">${auto_return_to_zero_on_activate}</param>
+            <param name="limit_margin">${limit_margin}</param>
+            <param name="limit_stop_margin">${limit_stop_margin}</param>
+            <param name="limit_decel_factor">${limit_decel_factor}</param>
             <param name="hand">${hand}</param>
             <param name="can_fd">${can_fd}</param>
             <param name="kp1">${control_gains['joint1']['kp']}</param>
@@ -56,7 +63,7 @@
             <param name="kd5">${control_gains['joint5']['kd']}</param>
             <param name="kd6">${control_gains['joint6']['kd']}</param>
             <param name="kd7">${control_gains['joint7']['kd']}</param>
-            <param name="zero_torque_kd">0.3</param>
+            <param name="zero_torque_kd">${zero_torque_kd}</param>
           </xacro:unless>
         </hardware>
 
@@ -113,6 +120,9 @@
             <param name="robstride_gripper_id">${robstride_gripper_id}</param>
             <param name="robstride_gripper_type">${robstride_gripper_type}</param>
             <param name="auto_return_to_zero_on_activate">${auto_return_to_zero_on_activate}</param>
+            <param name="limit_margin">${limit_margin}</param>
+            <param name="limit_stop_margin">${limit_stop_margin}</param>
+            <param name="limit_decel_factor">${limit_decel_factor}</param>
             <param name="hand">${hand}</param>
             <param name="can_fd">${can_fd}</param>
             <param name="kp1">${control_gains['joint1']['kp']}</param>
@@ -129,7 +139,7 @@
             <param name="kd5">${control_gains['joint5']['kd']}</param>
             <param name="kd6">${control_gains['joint6']['kd']}</param>
             <param name="kd7">${control_gains['joint7']['kd']}</param>
-            <param name="zero_torque_kd">0.3</param>
+            <param name="zero_torque_kd">${zero_torque_kd}</param>
           </xacro:unless>
         </hardware>
 
