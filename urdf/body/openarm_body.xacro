@@ -31,7 +31,8 @@
     <xacro:body_link_with_sc
     name="body_link0"
     no_prefix="${no_prefix}"
-    kinematics_link="${kinematics_link}" />
+    kinematics_link="${kinematics_link}"
+    body_prefix="${body_prefix}" />
     </xacro:macro>
 
 </robot>
