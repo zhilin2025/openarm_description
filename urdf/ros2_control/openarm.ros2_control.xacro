@@ -40,7 +40,7 @@
             <param name="state_following_offset">0.0</param>
           </xacro:if>
           <xacro:if value="${use_fake_hardware == 0}">
-            <plugin>openarm_hardware/OpenArm_${arm_type}HW</plugin>
+            <plugin>openarm_hardware/OpenArm_v10HW</plugin>
             <!--ROS 2 Control 启动时，读取 URDF 中的 <ros2_control> 标签：
               看到 <plugin>openarm_hardware/OpenArm_v10HW</plugin>；
               通过 pluginlib 找到 C++ 注册的 OpenArm_v10HW 类；

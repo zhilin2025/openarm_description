@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="openarm_v11">
+
+  <xacro:include filename="$(find openarm_description)/urdf/ros2_control/openarm.ros2_control.xacro" />
+  <xacro:include filename="$(find openarm_description)/urdf/ros2_control/openarm.bimanual.ros2_control.xacro" />
+
+  <xacro:arg name="arm_type" default="v11" />
+  <xacro:arg name="body_type" default="v11" />
+  <xacro:arg name="ee_type" default="openarm_hand_v2" />
+  <xacro:arg name="bimanual" default="true" />
+  <xacro:arg name="hand" default="true" />
+  <xacro:arg name="ros2_control" default="false" />
+  <xacro:arg name="use_fake_hardware" default="false" />
+  <xacro:arg name="can_interface" default="can0" />
+  <xacro:arg name="left_can_interface" default="can1" />
+  <xacro:arg name="right_can_interface" default="can0" />
+  <xacro:arg name="arm_prefix" default="" />
+  <xacro:arg name="left_arm_prefix" default="left_" />
+  <xacro:arg name="right_arm_prefix" default="right_" />
+  <xacro:arg name="motor_backend" default="robstride" />
+  <xacro:arg name="robstride_master_id" default="253" />
+  <xacro:arg name="robstride_joint_ids" default="1,2,3,4,5,6,7" />
+  <xacro:arg name="robstride_joint_types" default="3,3,6,6,0,0,0" />
+  <xacro:arg name="robstride_gripper_id" default="8" />
+  <xacro:arg name="robstride_gripper_type" default="0" />
+  <xacro:arg name="auto_return_to_zero_on_activate" default="false" />
+  <xacro:arg name="limit_margin" default="0.1" />
+  <xacro:arg name="limit_stop_margin" default="0.02" />
+  <xacro:arg name="limit_decel_factor" default="0.2" />
+  <xacro:arg name="zero_torque_kd" default="0.3" />
+
+  <xacro:property name="arm_type" value="$(arg arm_type)" />
+  <xacro:property name="body_type" value="$(arg body_type)" />
+  <xacro:property name="ee_type" value="$(arg ee_type)" />
+  <xacro:property name="bimanual" value="$(arg bimanual)" />
+  <xacro:property name="hand" value="$(arg hand)" />
+  <xacro:property name="ros2_control" value="$(arg ros2_control)" />
+  <xacro:property name="use_fake_hardware" value="$(arg use_fake_hardware)" />
+  <xacro:property name="can_interface" value="$(arg can_interface)" />
+  <xacro:property name="left_can_interface" value="$(arg left_can_interface)" />
+  <xacro:property name="right_can_interface" value="$(arg right_can_interface)" />
+  <xacro:property name="arm_prefix" value="$(arg arm_prefix)" />
+  <xacro:property name="left_arm_prefix" value="$(arg left_arm_prefix)" />
+  <xacro:property name="right_arm_prefix" value="$(arg right_arm_prefix)" />
+  <xacro:property name="motor_backend" value="$(arg motor_backend)" />
+  <xacro:property name="robstride_master_id" value="$(arg robstride_master_id)" />
+  <xacro:property name="robstride_joint_ids" value="$(arg robstride_joint_ids)" />
+  <xacro:property name="robstride_joint_types" value="$(arg robstride_joint_types)" />
+  <xacro:property name="robstride_gripper_id" value="$(arg robstride_gripper_id)" />
+  <xacro:property name="robstride_gripper_type" value="$(arg robstride_gripper_type)" />
+  <xacro:property name="auto_return_to_zero_on_activate" value="$(arg auto_return_to_zero_on_activate)" />
+  <xacro:property name="limit_margin" value="$(arg limit_margin)" />
+  <xacro:property name="limit_stop_margin" value="$(arg limit_stop_margin)" />
+  <xacro:property name="limit_decel_factor" value="$(arg limit_decel_factor)" />
+  <xacro:property name="zero_torque_kd" value="$(arg zero_torque_kd)" />
+
+  <xacro:property name="v11_root_name" value="openarm_body_link0" />
+
+  <xacro:macro name="v11_link" params="name visual_mesh collision_mesh inertial_xyz inertial_rpy mass ixx ixy ixz iyy iyz izz">
+    <link name="${name}">
+      <visual name="${name}_visual">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://openarm_description/${visual_mesh}" />
+        </geometry>
+      </visual>
+      <collision name="${name}_collision">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <mesh filename="package://openarm_description/${collision_mesh}" />
+        </geometry>
+      </collision>
+      <inertial>
+        <origin xyz="${inertial_xyz}" rpy="${inertial_rpy}" />
+        <mass value="${mass}" />
+        <inertia ixx="${ixx}" ixy="${ixy}" ixz="${ixz}" iyy="${iyy}" iyz="${iyz}" izz="${izz}" />
+      </inertial>
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="v11_joint" params="name parent child xyz axis lower upper effort velocity">
+    <joint name="${name}" type="revolute">
+      <origin xyz="${xyz}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="${child}" />
+      <axis xyz="${axis}" />
+      <limit lower="${lower}" upper="${upper}" effort="${effort}" velocity="${velocity}" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="v11_finger" params="link_name visual_mesh collision_mesh inertial_xyz inertial_rpy mass ixx ixy ixz iyy iyz izz joint_name parent child xyz axis lower upper effort velocity mimic:='none'">
+    <xacro:v11_link name="${link_name}"
+                    visual_mesh="${visual_mesh}"
+                    collision_mesh="${collision_mesh}"
+                    inertial_xyz="${inertial_xyz}"
+                    inertial_rpy="${inertial_rpy}"
+                    mass="${mass}"
+                    ixx="${ixx}"
+                    ixy="${ixy}"
+                    ixz="${ixz}"
+                    iyy="${iyy}"
+                    iyz="${iyz}"
+                    izz="${izz}" />
+    <joint name="${joint_name}" type="prismatic">
+      <origin xyz="${xyz}" rpy="0 0 0" />
+      <parent link="${parent}" />
+      <child link="${child}" />
+      <axis xyz="${axis}" />
+      <limit lower="${lower}" upper="${upper}" effort="${effort}" velocity="${velocity}" />
+      <xacro:if value="${mimic != 'none'}">
+        <mimic joint="${mimic}" multiplier="-1" offset="0" />
+      </xacro:if>
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="v11_arm_left">
+    <xacro:v11_link name="${v11_root_name}"
+                    visual_mesh="meshes/body/v11/visual/base_link.stl"
+                    collision_mesh="meshes/body/v11/collision/base_link.stl"
+                    inertial_xyz="-1.0181093574313e-06 0.0263099092900027 -0.137649089471103"
+                    inertial_rpy="0 0 0"
+                    mass="4.2467153470492"
+                    ixx="0.0462604467525799"
+                    ixy="-1.06282238363849e-09"
+                    ixz="2.90666292951662e-08"
+                    iyy="0.0445199293058937"
+                    iyz="0.00148161784058857"
+                    izz="0.0124055082829418" />
+
+    <xacro:v11_link name="openarm_left_link0"
+                    visual_mesh="meshes/arm/v11/visual/left_arm1_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm1_Link.stl"
+                    inertial_xyz="0.0480034494619743 -0.01048822414211 0.00213238824636697"
+                    inertial_rpy="0 0 0"
+                    mass="0.329904824352505"
+                    ixx="0.000477199414474511"
+                    ixy="-2.54054511961426e-05"
+                    ixz="1.41751022911498e-05"
+                    iyy="0.000740837049886851"
+                    iyz="-1.64698141527151e-05"
+                    izz="0.000531637742669292" />
+    <xacro:v11_joint name="openarm_left_joint1" parent="${v11_root_name}" child="openarm_left_link0"
+                     xyz="0.0875 0.00016852 0.31809" axis="-1 0 0" lower="-1.65" upper="3.21" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_left_link1"
+                    visual_mesh="meshes/arm/v11/visual/left_arm2_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm2_Link.stl"
+                    inertial_xyz="9.43773732069997e-05 0.0111870952031294 -0.025795955681835"
+                    inertial_rpy="0 0 0"
+                    mass="0.144619933465423"
+                    ixx="0.000118526978466573"
+                    ixy="2.10330643521917e-06"
+                    ixz="5.33709125287303e-06"
+                    iyy="0.000172596879709546"
+                    iyz="-8.57799616471462e-06"
+                    izz="9.02930797233076e-05" />
+    <xacro:v11_joint name="openarm_left_joint2" parent="openarm_left_link0" child="openarm_left_link1"
+                     xyz="0.067 0.023583 -6.4168e-05" axis="0 1 -0.0028217" lower="-2.89" upper="0.36" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_left_link2"
+                    visual_mesh="meshes/arm/v11/visual/left_arm3_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm3_Link.stl"
+                    inertial_xyz="0.000117176068479448 -0.00228567825018618 -0.108764046735011"
+                    inertial_rpy="0 0 0"
+                    mass="0.481858916071281"
+                    ixx="0.00111749940688769"
+                    ixy="-3.16281971761857e-05"
+                    ixz="2.64283287635222e-05"
+                    iyy="0.00134908724589531"
+                    iyz="5.13648029848404e-07"
+                    izz="0.00056421175126219" />
+    <xacro:v11_joint name="openarm_left_joint3" parent="openarm_left_link1" child="openarm_left_link2"
+                     xyz="-0.0016857 -0.023121 -0.078167" axis="-0.021542 -0.0028211 -0.99976" lower="-3.0" upper="0.13" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_left_link3"
+                    visual_mesh="meshes/arm/v11/visual/left_arm4_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm4_Link.stl"
+                    inertial_xyz="0.00215669539506161 0.000313795459032755 -0.0722694489967509"
+                    inertial_rpy="0 0 0"
+                    mass="0.199313955949485"
+                    ixx="0.00015230354712237"
+                    ixy="4.76606488288115e-06"
+                    ixz="-3.98384616910256e-06"
+                    iyy="0.000122640707559274"
+                    iyz="-9.09637592259921e-07"
+                    izz="0.000100424432052024" />
+    <xacro:v11_joint name="openarm_left_joint4" parent="openarm_left_link2" child="openarm_left_link3"
+                     xyz="-0.0035655 3.7342e-05 -0.16246" axis="-0.12985 0.99153 0" lower="-0.28" upper="1.63" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_left_link4"
+                    visual_mesh="meshes/arm/v11/visual/left_arm5_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm5_Link.stl"
+                    inertial_xyz="0.000307889827919912 0.00230165451582071 -0.0549509628726983"
+                    inertial_rpy="0 0 0"
+                    mass="0.324913785472602"
+                    ixx="0.000358736762616609"
+                    ixy="-2.15436511928979e-06"
+                    ixz="-4.01111227828249e-06"
+                    iyy="0.000426522737478148"
+                    iyz="9.3618583154708e-07"
+                    izz="0.000182524812032135" />
+    <xacro:v11_joint name="openarm_left_joint5" parent="openarm_left_link3" child="openarm_left_link4"
+                     xyz="0 0 -0.1049" axis="0 0 -1" lower="-2.72" upper="-0.14" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_left_link5"
+                    visual_mesh="meshes/arm/v11/visual/left_arm6_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm6_Link.stl"
+                    inertial_xyz="-0.00448421186458429 -0.000304649494193017 0.000241122166978219"
+                    inertial_rpy="0 0 0"
+                    mass="0.14668282710603"
+                    ixx="5.82258453155884e-05"
+                    ixy="-9.75455419838118e-09"
+                    ixz="-5.66617417291183e-08"
+                    iyy="5.69878936472406e-05"
+                    iyz="-3.84408403589414e-09"
+                    izz="5.65025238376914e-05" />
+    <xacro:v11_joint name="openarm_left_joint6" parent="openarm_left_link4" child="openarm_left_link5"
+                     xyz="0 0 -0.1205" axis="0 1 0" lower="-0.52" upper="0.52" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_left_link6"
+                    visual_mesh="meshes/arm/v11/visual/left_arm7_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/left_arm7_Link.stl"
+                    inertial_xyz="-0.0177390171739681 0.00118696323443721 -0.0663081495071"
+                    inertial_rpy="0 0 0"
+                    mass="0.255303537305332"
+                    ixx="0.000173289062726248"
+                    ixy="2.61122542716374e-06"
+                    ixz="-1.44046384046567e-05"
+                    iyy="0.000169839971368196"
+                    iyz="1.95045639079987e-07"
+                    izz="0.0001537900417873" />
+    <xacro:v11_joint name="openarm_left_joint7" parent="openarm_left_link5" child="openarm_left_link6"
+                     xyz="0.01989 9.503e-05 -0.00064186" axis="0.99948 0 -0.032254" lower="-1.29" upper="1.29" effort="0" velocity="0" />
+
+    <link name="openarm_left_link7" />
+    <joint name="openarm_left_link6_to_link7" type="fixed">
+      <parent link="openarm_left_link6" />
+      <child link="openarm_left_link7" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="openarm_left_hand" />
+    <joint name="openarm_left_hand_joint" type="fixed">
+      <parent link="openarm_left_link7" />
+      <child link="openarm_left_hand" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <xacro:v11_finger link_name="openarm_left_right_finger"
+                      visual_mesh="meshes/ee/openarm_hand_v2/visual/left_arm81_Link.stl"
+                      collision_mesh="meshes/ee/openarm_hand_v2/collision/left_arm81_Link.stl"
+                      inertial_xyz="0.00119200641199625 0.00149260478668689 -0.017142606809794"
+                      inertial_rpy="0 0 0"
+                      mass="0.0377302486307942"
+                      ixx="1.99670506306233e-05"
+                      ixy="-1.08180318262873e-07"
+                      ixz="2.26140677641881e-06"
+                      iyy="1.51584030028811e-05"
+                      iyz="5.78610831800373e-07"
+                      izz="8.91163978595957e-06"
+                      joint_name="openarm_left_finger_joint1"
+                      parent="openarm_left_hand"
+                      child="openarm_left_right_finger"
+                      xyz="-0.0675571238105335 0.00212260306255586 -0.124512480873558"
+                      axis="-0.999123068028594 0 -0.0418699765121715"
+                      lower="-0.028"
+                      upper="0.02"
+                      effort="0"
+                      velocity="0" />
+
+    <xacro:v11_finger link_name="openarm_left_left_finger"
+                      visual_mesh="meshes/ee/openarm_hand_v2/visual/left_arm82_Link.stl"
+                      collision_mesh="meshes/ee/openarm_hand_v2/collision/left_arm82_Link.stl"
+                      inertial_xyz="-0.00229652447118812 -0.00159346642018553 -0.0170858294908156"
+                      inertial_rpy="0 0 0"
+                      mass="0.0377306316075209"
+                      ixx="1.96795647775716e-05"
+                      ixy="2.80394416300681e-08"
+                      ixz="-2.95668778960467e-06"
+                      iyy="1.51928321837909e-05"
+                      iyz="-3.69134309629409e-07"
+                      izz="9.26397974073573e-06"
+                      joint_name="openarm_left_finger_joint2"
+                      parent="openarm_left_hand"
+                      child="openarm_left_left_finger"
+                      xyz="0.027753 0.0021226 -0.12759"
+                      axis="-0.99912 0 -0.04187"
+                      lower="-0.01"
+                      upper="0.032"
+                      effort="0"
+                      velocity="0"
+                      mimic="openarm_left_finger_joint1" />
+  </xacro:macro>
+
+  <xacro:macro name="v11_arm_right">
+    <xacro:v11_link name="openarm_right_link0"
+                    visual_mesh="meshes/arm/v11/visual/right_arm1_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm1_Link.stl"
+                    inertial_xyz="-0.0480061198212489 -0.0112080215398585 0.00187699545649489"
+                    inertial_rpy="0 0 0"
+                    mass="0.329914954349895"
+                    ixx="0.000477285440086254"
+                    ixy="2.59596759901839e-05"
+                    ixz="-1.36039094026152e-05"
+                    iyy="0.000740691262683177"
+                    iyz="-1.18493589225998e-05"
+                    izz="0.000530229463662106" />
+    <xacro:v11_joint name="openarm_right_joint1" parent="${v11_root_name}" child="openarm_right_link0"
+                     xyz="-0.0875000000000191 0.000168522015465328 0.318089913331265" axis="1 0 0" lower="-3.23" upper="1.63" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_right_link1"
+                    visual_mesh="meshes/arm/v11/visual/right_arm2_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm2_Link.stl"
+                    inertial_xyz="-0.000213730710617505 0.0117714254768253 -0.0255035799694038"
+                    inertial_rpy="0 0 0"
+                    mass="0.144374204333989"
+                    ixx="0.000125757154354899"
+                    ixy="-1.81526954840388e-07"
+                    ixz="-1.94474946458065e-06"
+                    iyy="0.00018077193841201"
+                    iyz="-9.7388634267313e-06"
+                    izz="9.37146230061534e-05" />
+    <xacro:v11_joint name="openarm_right_joint2" parent="openarm_right_link0" child="openarm_right_link1"
+                     xyz="-0.0670000000000161 0.0228957316518904 0.000442122295684744" axis="0 0.999813609253167 0.0193066504644205" lower="-0.35" upper="2.89" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_right_link2"
+                    visual_mesh="meshes/arm/v11/visual/right_arm3_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm3_Link.stl"
+                    inertial_xyz="-6.84095606952595e-05 -0.000175392492947499 -0.108795253551956"
+                    inertial_rpy="0 0 0"
+                    mass="0.481841863486706"
+                    ixx="0.00111313396072085"
+                    ixy="1.29572799539869e-06"
+                    ixz="-2.75280065627674e-05"
+                    iyy="0.00135303123732441"
+                    iyz="1.267944104295e-05"
+                    izz="0.000564484880199774" />
+    <xacro:v11_joint name="openarm_right_joint3" parent="openarm_right_link1" child="openarm_right_link2"
+                     xyz="0.00152231849172751 -0.0213852721731895 -0.0786627305684751" axis="-0.0194545494150194 -0.0193029965330121 0.999624386873342" lower="-3.12" upper="0" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_right_link3"
+                    visual_mesh="meshes/arm/v11/visual/right_arm4_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm4_Link.stl"
+                    inertial_xyz="-0.00709857035506811 0.00143397924089721 -0.0724745001180234"
+                    inertial_rpy="0 0 0"
+                    mass="0.194976130072511"
+                    ixx="0.000146757132572035"
+                    ixy="-8.00365838689974e-07"
+                    ixz="-1.80761505473983e-07"
+                    iyy="0.000119162837963084"
+                    iyz="1.43000951464821e-07"
+                    izz="9.45252083767826e-05" />
+    <xacro:v11_joint name="openarm_right_joint4" parent="openarm_right_link2" child="openarm_right_link3"
+                     xyz="0.00316136427993746 0.00363664374112047 -0.162429309541684" axis="0 -0.999813609253167 -0.0193066504644295" lower="-0.24" upper="1.68" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_right_link4"
+                    visual_mesh="meshes/arm/v11/visual/right_arm5_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm5_Link.stl"
+                    inertial_xyz="-0.00386477034491606 0.00395147276428454 -0.0471675068364879"
+                    inertial_rpy="0 0 0"
+                    mass="0.234913284848243"
+                    ixx="0.000162774687412421"
+                    ixy="-1.85329658726995e-06"
+                    ixz="-1.80662912905384e-06"
+                    iyy="0.000193057599125045"
+                    iyz="1.70123510140371e-06"
+                    izz="0.000118790406045348" />
+    <xacro:v11_joint name="openarm_right_joint5" parent="openarm_right_link3" child="openarm_right_link4"
+                     xyz="-0.00746810467908582 0.00202012869338236 -0.104614322597743" axis="0.0711939666374613 -0.0192576596473202 0.997276572300449" lower="-2.7" upper="-0.12" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_right_link5"
+                    visual_mesh="meshes/arm/v11/visual/right_arm6_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm6_Link.stl"
+                    inertial_xyz="0.0045087535806177 6.11175288401516e-05 -8.24164517743142e-05"
+                    inertial_rpy="0 0 0"
+                    mass="0.14665841098083"
+                    ixx="5.82087274610851e-05"
+                    ixy="1.38472108890398e-07"
+                    ixz="-6.39146977680369e-08"
+                    iyy="5.70002058827723e-05"
+                    iyz="2.22185896055187e-09"
+                    izz="5.6499776061088e-05" />
+    <xacro:v11_joint name="openarm_right_joint6" parent="openarm_right_link4" child="openarm_right_link5"
+                     xyz="-0.00858865089323763 0.00241503877784011 -0.120169304291928" axis="-0.102894166439219 0.994338011479771 0.026546363955051" lower="-0.52" upper="0.52" effort="0" velocity="0" />
+
+    <xacro:v11_link name="openarm_right_link6"
+                    visual_mesh="meshes/arm/v11/visual/right_arm7_Link.stl"
+                    collision_mesh="meshes/arm/v11/collision/right_arm7_Link.stl"
+                    inertial_xyz="0.0129052767099171 0.00262406394335846 -0.0673853427332476"
+                    inertial_rpy="0 0 0"
+                    mass="0.255547372608454"
+                    ixx="0.000175809648866052"
+                    ixy="-1.96978666764697e-06"
+                    ixz="1.26543999194486e-05"
+                    iyy="0.000169209943720618"
+                    iyz="1.71708129306102e-06"
+                    izz="0.000152150225115048" />
+    <xacro:v11_joint name="openarm_right_joint7" parent="openarm_right_link5" child="openarm_right_link6"
+                     xyz="-0.0197784297364522 -0.00206652971066514 0.00074375541566038" axis="-0.993890941526293 -0.103845714103361 0.0373746440028857" lower="-1.29" upper="1.29" effort="0" velocity="0" />
+
+    <link name="openarm_right_link7" />
+    <joint name="openarm_right_link6_to_link7" type="fixed">
+      <parent link="openarm_right_link6" />
+      <child link="openarm_right_link7" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <link name="openarm_right_hand" />
+    <joint name="openarm_right_hand_joint" type="fixed">
+      <parent link="openarm_right_link7" />
+      <child link="openarm_right_hand" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <xacro:v11_finger link_name="openarm_right_right_finger"
+                      visual_mesh="meshes/ee/openarm_hand_v2/visual/right_arm81_Link.stl"
+                      collision_mesh="meshes/ee/openarm_hand_v2/collision/right_arm81_Link.stl"
+                      inertial_xyz="0.000981660626948488 -0.00152020949823352 -0.0247979715869667"
+                      inertial_rpy="0 0 0"
+                      mass="0.0377314135748585"
+                      ixx="2.00004449327897e-05"
+                      ixy="4.45426606177677e-07"
+                      ixz="2.23064764936728e-06"
+                      iyy="1.5235783413924e-05"
+                      iyz="-1.27280169979086e-07"
+                      izz="8.90324955840204e-06"
+                      joint_name="openarm_right_finger_joint1"
+                      parent="openarm_right_hand"
+                      child="openarm_right_right_finger"
+                      xyz="-0.0303294079361539 -0.000890350391088278 -0.117930442294312"
+                      axis="-0.993890941526294 -0.103845714103374 0.037374644002811"
+                      lower="-0.03"
+                      upper="0.016"
+                      effort="0"
+                      velocity="0" />
+
+    <xacro:v11_finger link_name="openarm_right_left_finger"
+                      visual_mesh="meshes/ee/openarm_hand_v2/visual/right_arm82_Link.stl"
+                      collision_mesh="meshes/ee/openarm_hand_v2/collision/right_arm82_Link.stl"
+                      inertial_xyz="-0.00282595451103684 0.00133773427904762 -0.0247550510382186"
+                      inertial_rpy="0 0 0"
+                      mass="0.0377310762104851"
+                      ixx="1.95212846118919e-05"
+                      ixy="6.0740792009987e-07"
+                      ixz="-3.05082272885581e-06"
+                      iyy="1.52374588301135e-05"
+                      iyz="2.61075370596092e-07"
+                      izz="9.28072825423338e-06"
+                      joint_name="openarm_right_finger_joint2"
+                      parent="openarm_right_hand"
+                      child="openarm_right_left_finger"
+                      xyz="0.0619283401036995 0.00874910935894739 -0.121399736907457"
+                      axis="-0.993890941526294 -0.103845714103374 0.037374644002811"
+                      lower="-0.016"
+                      upper="0.027"
+                      effort="0"
+                      velocity="0"
+                      mimic="openarm_right_finger_joint1" />
+  </xacro:macro>
+
+  <xacro:if value="${bimanual}">
+    <xacro:v11_arm_left />
+    <xacro:v11_arm_right />
+  </xacro:if>
+
+  <xacro:unless value="${bimanual}">
+    <xacro:if value="${arm_prefix == 'right_'}">
+      <xacro:v11_arm_right />
+    </xacro:if>
+    <xacro:unless value="${arm_prefix == 'right_'}">
+      <xacro:v11_arm_left />
+    </xacro:unless>
+  </xacro:unless>
+
+  <xacro:if value="${ros2_control}">
+    <xacro:if value="${bimanual}">
+      <xacro:openarm_bimanual_ros2_control
+        arm_type="${arm_type}"
+        control_gains="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/control_gains.yaml')}"
+        left_can_interface="${left_can_interface}"
+        right_can_interface="${right_can_interface}"
+        motor_backend="${motor_backend}"
+        robstride_master_id="${robstride_master_id}"
+        robstride_joint_ids="${robstride_joint_ids}"
+        robstride_joint_types="${robstride_joint_types}"
+        robstride_gripper_id="${robstride_gripper_id}"
+        robstride_gripper_type="${robstride_gripper_type}"
+        auto_return_to_zero_on_activate="${auto_return_to_zero_on_activate}"
+        limit_margin="${limit_margin}"
+        limit_stop_margin="${limit_stop_margin}"
+        limit_decel_factor="${limit_decel_factor}"
+        zero_torque_kd="${zero_torque_kd}"
+        use_fake_hardware="${use_fake_hardware}"
+        fake_sensor_commands="false"
+        hand="${hand}"
+        left_arm_prefix="left_"
+        right_arm_prefix="right_"
+        can_fd="true" />
+    </xacro:if>
+    <xacro:unless value="${bimanual}">
+      <xacro:openarm_arm_ros2_control
+        arm_type="${arm_type}"
+        control_gains="${xacro.load_yaml('$(find openarm_description)/config/arm/v10/control_gains.yaml')}"
+        can_interface="${can_interface}"
+        motor_backend="${motor_backend}"
+        robstride_master_id="${robstride_master_id}"
+        robstride_joint_ids="${robstride_joint_ids}"
+        robstride_joint_types="${robstride_joint_types}"
+        robstride_gripper_id="${robstride_gripper_id}"
+        robstride_gripper_type="${robstride_gripper_type}"
+        auto_return_to_zero_on_activate="${auto_return_to_zero_on_activate}"
+        limit_margin="${limit_margin}"
+        limit_stop_margin="${limit_stop_margin}"
+        limit_decel_factor="${limit_decel_factor}"
+        zero_torque_kd="${zero_torque_kd}"
+        use_fake_hardware="${use_fake_hardware}"
+        fake_sensor_commands="false"
+        hand="${hand}"
+        arm_prefix="${arm_prefix}"
+        can_fd="true" />
+    </xacro:unless>
+  </xacro:if>
+
+</robot>
