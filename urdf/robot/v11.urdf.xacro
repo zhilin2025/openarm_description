@@ -170,7 +170,7 @@
                     iyz="5.13648029848404e-07"
                     izz="0.00056421175126219" />
     <xacro:v11_joint name="openarm_left_joint3" parent="openarm_left_link1" child="openarm_left_link2"
-             xyz="-0.0016857 -0.023121 -0.078167" rpy="0 0 1.5708" axis="-0.021542 -0.0028211 -0.99976" lower="-1.5479" upper="1.5084" effort="27" velocity="5.445426" />
+             xyz="-0.0016857 -0.023121 -0.078167" rpy="0 0 1.5708" axis="-0.021542 -0.0028211 0.99976" lower="-1.5479" upper="1.5084" effort="27" velocity="5.445426" />
 
     <xacro:v11_link name="openarm_left_link3"
                     visual_mesh="meshes/arm/v11/visual/left_arm4_Link.stl"
@@ -396,7 +396,7 @@
                     iyz="1.71708129306102e-06"
                     izz="0.000152150225115048" />
     <xacro:v11_joint name="openarm_right_joint7" parent="openarm_right_link5" child="openarm_right_link6"
-             xyz="-0.0197784297364522 -0.00206652971066514 0.00074375541566038" axis="-0.993890941526293 -0.103845714103361 0.0373746440028857" lower="-1.5725" upper="1.4777" effort="7" velocity="20.943946" />
+             xyz="-0.0197784297364522 -0.00206652971066514 0.00074375541566038" axis="0.993890941526293 -0.103845714103361 0.0373746440028857" lower="-1.5725" upper="1.4777" effort="7" velocity="20.943946" />
 
     <link name="openarm_right_link7" />
     <joint name="openarm_right_link6_to_link7" type="fixed">
