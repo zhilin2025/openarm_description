@@ -43,3 +43,5 @@ controller_manager 订阅 robot_description，读到 <ros2_control> 标签后：
 
 功能包使用：
 ros2 launch openarm_description display_openarm.launch.py arm_type:=v11
+# jgzharm_description
+Robot URDF/SDF models and meshes for dual-arm manipulation simulation.
