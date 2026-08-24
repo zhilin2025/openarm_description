@@ -40,3 +40,6 @@ controller_manager 订阅 robot_description，读到 <ros2_control> 标签后：
 找到 <plugin>openarm_hardware/OpenArm_v10HW</plugin>
 调用 pluginlib 去加载对应的 C++ 类
 本质上openarm_robot.xacro里的 <ros2_control> 标签就是一个配置清单：告诉 controller_manager 加载哪个硬件驱动、传什么参数、有哪些关节、每个关节支持什么指令
+
+功能包使用：
+ros2 launch openarm_description display_openarm.launch.py arm_type:=v11
