@@ -258,7 +258,14 @@
     <xacro:v11_joint name="openarm_left_joint7" parent="openarm_left_link6" child="openarm_left_link7"
              xyz="0.0199 0 0" axis="-1 0 0" lower="-1.56" upper="1.56" effort="7" velocity="20.943946" />
 
-    <xacro:v11_finger link_name="openarm_left_link8"
+    <link name="openarm_left_hand" />
+    <joint name="openarm_left_hand_joint" type="fixed">
+      <parent link="openarm_left_link7" />
+      <child link="openarm_left_hand" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <xacro:v11_finger link_name="openarm_left_right_finger"
                       visual_mesh="meshes/ee/openarm_hand_v2/visual/openarm_left_link8.stl"
                       collision_mesh="meshes/ee/openarm_hand_v2/collision/openarm_left_link8.stl"
                       inertial_xyz="-0.00101811824334996 0.00172774228466271 -0.0246179653553815"
@@ -270,9 +277,9 @@
                       iyy="0.000152330428211483"
                       iyz="2.01335670695175E-05"
                       izz="6.94504322910065E-05"
-                      joint_name="openarm_left_joint8"
-                      parent="openarm_left_link7"
-                      child="openarm_left_link8"
+                      joint_name="openarm_left_finger_joint1"
+                      parent="openarm_left_hand"
+                      child="openarm_left_right_finger"
                       xyz="-0.0205 -0.018499 -0.119"
                       axis="0 -1 0"
                       lower="0.0"
@@ -280,7 +287,7 @@
                       effort="7"
                       velocity="20" />
 
-    <xacro:v11_finger link_name="openarm_left_link9"
+    <xacro:v11_finger link_name="openarm_left_left_finger"
                       visual_mesh="meshes/ee/openarm_hand_v2/visual/openarm_left_link9.stl"
                       collision_mesh="meshes/ee/openarm_hand_v2/collision/openarm_left_link9.stl"
                       inertial_xyz="0.00199225371514336 -0.00172789265684049 -0.0246193208504154"
@@ -292,16 +299,16 @@
                       iyy="0.000152719497649736"
                       iyz="-2.01356486546468E-05"
                       izz="6.98266910179461E-05"
-                      joint_name="openarm_left_joint9"
-                      parent="openarm_left_link7"
-                      child="openarm_left_link9"
+                      joint_name="openarm_left_finger_joint2"
+                      parent="openarm_left_hand"
+                      child="openarm_left_left_finger"
                       xyz="-0.0205 0.018501 -0.119"
                       axis="0 -1 0"
                       lower="-0.044"
                       upper="0.0"
                       effort="7"
                       velocity="20"
-                      mimic="openarm_left_joint8" />
+                      mimic="openarm_left_finger_joint1" />
   </xacro:macro>
 
   <xacro:macro name="v11_arm_right">
@@ -428,7 +435,14 @@
     <xacro:v11_joint name="openarm_right_joint7" parent="openarm_right_link6" child="openarm_right_link7"
              xyz="-0.0199 0 0" axis="-1 0 0" lower="-1.56" upper="1.56" effort="7" velocity="20.943946" />
 
-    <xacro:v11_finger link_name="openarm_right_link8"
+    <link name="openarm_right_hand" />
+    <joint name="openarm_right_hand_joint" type="fixed">
+      <parent link="openarm_right_link7" />
+      <child link="openarm_right_hand" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
+    </joint>
+
+    <xacro:v11_finger link_name="openarm_right_right_finger"
                       visual_mesh="meshes/ee/openarm_hand_v2/visual/openarm_right_link8.stl"
                       collision_mesh="meshes/ee/openarm_hand_v2/collision/openarm_right_link8.stl"
                       inertial_xyz="-0.00101811823961093 0.00172774224891818 -0.024621172594379"
@@ -440,9 +454,9 @@
                       iyy="0.000152330428200738"
                       iyz="2.01335670836026E-05"
                       izz="6.94504322969539E-05"
-                      joint_name="openarm_right_joint8"
-                      parent="openarm_right_link7"
-                      child="openarm_right_link8"
+                      joint_name="openarm_right_finger_joint1"
+                      parent="openarm_right_hand"
+                      child="openarm_right_right_finger"
                       xyz="0.0205 -0.0185 -0.119"
                       axis="0 -1 0"
                       lower="0.0"
@@ -450,7 +464,7 @@
                       effort="7"
                       velocity="20" />
 
-    <xacro:v11_finger link_name="openarm_right_link9"
+    <xacro:v11_finger link_name="openarm_right_left_finger"
                       visual_mesh="meshes/ee/openarm_hand_v2/visual/openarm_right_link9.stl"
                       collision_mesh="meshes/ee/openarm_hand_v2/collision/openarm_right_link9.stl"
                       inertial_xyz="0.00199225371493203 -0.00172789266709448 -0.0246225281341831"
@@ -462,16 +476,16 @@
                       iyy="0.000152719498824034"
                       iyz="-2.01356487863785E-05"
                       izz="6.98266910427359E-05"
-                      joint_name="openarm_right_joint9"
-                      parent="openarm_right_link7"
-                      child="openarm_right_link9"
+                      joint_name="openarm_right_finger_joint2"
+                      parent="openarm_right_hand"
+                      child="openarm_right_left_finger"
                       xyz="0.0205 0.0185 -0.119"
                       axis="0 -1 0"
                       lower="-0.044"
                       upper="0.0"
                       effort="7"
                       velocity="20"
-                      mimic="openarm_right_joint8" />
+                      mimic="openarm_right_finger_joint1" />
   </xacro:macro>
 
   <xacro:macro name="v11_head">
