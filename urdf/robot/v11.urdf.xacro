@@ -514,6 +514,16 @@
     <xacro:v11_head />
   </xacro:unless>
 
+  <!-- 地面坐标系锚点：world 与机身基座 (body_link0) 重合。
+       真机 / MoveIt / 仿真共用；仿真若需离地高度请在 spawn 时加 -z 偏移，
+       不要在此处修改 world→base 变换。 -->
+  <link name="world" />
+  <joint name="world_to_openarm" type="fixed">
+    <origin xyz="0 0 0.38" rpy="0 0 0" />
+    <parent link="world" />
+    <child link="${v11_root_name}" />
+  </joint>
+
   <xacro:if value="${ros2_control}">
     <xacro:if value="${bimanual}">
       <xacro:openarm_bimanual_ros2_control
